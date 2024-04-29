@@ -1,0 +1,38 @@
+
+	// check for inserted data in the second file
+	if h.hashMap[other.hashSlice[auxJ]] == 0 {
+		// found inserted data, find out how many and create a delta object
+		for auxJ := j + 1; auxJ < len(other.hashSlice); auxJ++ {
+			if h.hashMap[other.hashSlice[auxJ]] != 0 {
+				// found end of inserted data, update the delta object
+				operation := "insert"
+				if deletedFound {
+					operation := "replace"
+				}
+				delta = Delta{
+					Operation: operation,
+					Start: i,
+					End: retI,
+					Literal: other.data[j:auxJ],
+				}
+				retJ = auxJ
+				break
+			}
+			else if auxJ == len(other.hashSlice) - 1 {
+				operation := "insert"
+				if deletedFound {
+					operation := "replace"
+				}
+				delta = Delta{
+					Operation: operation,
+					Start: i,
+					End: retI,
+					Literal: other.data[j:],
+				}
+				retJ = auxJ
+			}
+		}
+	}
+	return delta, retI, retJ
+}
+

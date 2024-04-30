@@ -1,27 +1,28 @@
-// Package rolling-hash provides a rolling hash function implementation.
+// Package compute provides a rolling hash based file diffing function implementation.
+// The Rabin-Karp algorithm is implemented for the rolling hash function.
 package compute
 
 const (
-	prime = 31      // A large prime number for better hash distribution
-	base  = 128     // Base for the hash function (size of the alphabet)
-	mod   = 1e9 + 9 // Modulo to keep the hash value within a specific range
+	base = 16      // Base for the hash function
+	mod  = 1e9 + 7 // Modulo to keep the hash value within a specific range
 )
 
 // RollingHash represents a rolling hash object
 type RollingHash struct {
-	hash int
-	pow  int // Precomputed power of base
+	hash uint64
+	pow  uint64 // Precomputed power of base
 }
 
-// NewRollingHash initializes a RollingHash object
+// NewRollingHash initializes a RollingHash object based on the Rabin-Karp algorithm
 func NewRollingHash(window []byte) *RollingHash {
-	hash := 0
-	pow := 1
+	var hash uint64 = 0
+	var pow uint64 = 1
 
 	for _, char := range window {
-		hash = (hash*base + int(char)) % mod
+		hash = (hash*base + uint64(char)) % mod
 		pow = (pow * base) % mod
 	}
+	pow = pow / base
 
 	return &RollingHash{
 		hash: hash,
@@ -29,8 +30,8 @@ func NewRollingHash(window []byte) *RollingHash {
 	}
 }
 
-// Roll updates the hash value for a new character entering the window
-func (h *RollingHash) Roll(char byte) {
-	oldChar := (h.hash - int(char)*h.pow + mod) % mod
-	h.hash = (oldChar*base + int(char)) % mod
+// Roll updates the hash value for a new character entering the window and an old character leaving the window
+func (h *RollingHash) Roll(charIn, charOut byte) {
+	hashOut := h.hash - uint64(charOut)*h.pow
+	h.hash = (hashOut*base + uint64(charIn)) % mod
 }

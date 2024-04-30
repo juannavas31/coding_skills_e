@@ -1,10 +1,11 @@
 // Package compute provides a rolling hash based file diffing function implementation.
 package compute
 
+// RollingHashTable represents the object used for comparing two files using a rolling hash table
 type RollingHashTable struct {
-	hashSlice []int       // stores the rolling hash values of each sliding window
-	hashMap   map[int]int // stores the hash value and the sliding window in the file
-	data      []byte      // stores the data of the file
+	hashSlice []uint64       // stores the rolling hash values of each sliding window
+	hashMap   map[uint64]int // stores the hash value and the sliding window in the file
+	data      []byte         // stores the data of the file
 }
 
 // Creates a new RollingHashTable object
@@ -13,16 +14,16 @@ func NewRollingHashTable(data []byte, window int) *RollingHashTable {
 		return nil
 	}
 
-	hashSlice := make([]int, len(data)-window+1)
+	hashSlice := make([]uint64, len(data)-window+1)
 	hasher := NewRollingHash(data[:window])
 	hashSlice[0] = hasher.hash
 	// create a map to store the hash value and the sliding window
-	hashMap := make(map[int]int)
+	hashMap := make(map[uint64]int)
 	// add the first hash value to the map
-	hashMap[hasher.hash] = window - 1 // position of the last character in the window
+	hashMap[hasher.hash] = 0 // position of the first character in the first window
 	for i := window; i < len(data); i++ {
-		hasher.Roll(data[i])
-		hashSlice[i] = hasher.hash
+		hasher.Roll(data[i], data[i-window])
+		hashSlice[i-window+1] = hasher.hash
 		hashMap[hasher.hash] = i
 	}
 	return &RollingHashTable{
@@ -39,11 +40,10 @@ func (h *RollingHashTable) Compare(other *RollingHashTable) *DeltaList {
 
 	for i < len(h.hashSlice) && j < len(other.hashSlice) {
 		if h.hashSlice[i] != other.hashSlice[j] {
-			delta, i, j := CreateDelta(i, j, h, other)
+			delta, newI, newJ := CreateDelta(i, j, h, other)
+			i, j = newI, newJ
+
 			deltaList.AddDelta(delta)
-			if i >= len(h.hashSlice) || j >= len(other.hashSlice) {
-				break
-			}
 		} else {
 			j++
 			i++
@@ -58,16 +58,14 @@ func (h *RollingHashTable) Compare(other *RollingHashTable) *DeltaList {
 // in the first and second file once they are equal again (i.e. the end of the deleted and inserted data),
 func CreateDelta(i, j int, h, other *RollingHashTable) (Delta, int, int) {
 	var delta Delta
-	var retI, retJ int
-	deletedFound := false
+	var retI, retJ int = i, j
+	deletedFlag := other.hashMap[h.hashSlice[i]] == 0
+
 	// check for deleted data in the first file
-	for auxI := i; auxI < len(h.hashSlice); auxI++ {
-		if other.hashMap[h.hashSlice[auxI]] == 0 {
-			deletedFound = true
-		} else {
-			// found end of deleted data, create a delta object
+	for auxI := i + 1; auxI < len(h.hashSlice); auxI++ {
+		if other.hashMap[h.hashSlice[auxI]] != 0 {
 			delta = Delta{
-				Operation: "delete",
+				Operation: Delete,
 				Start:     i,
 				End:       auxI,
 				Literal:   h.data[i:auxI],
@@ -75,9 +73,9 @@ func CreateDelta(i, j int, h, other *RollingHashTable) (Delta, int, int) {
 			retI = auxI
 			break
 		}
-		if auxI == len(h.hashSlice)-1 {
+		if auxI >= len(h.hashSlice)-1 {
 			delta = Delta{
-				Operation: "delete",
+				Operation: Delete,
 				Start:     i,
 				End:       len(h.hashSlice),
 				Literal:   h.data[i:],
@@ -87,13 +85,12 @@ func CreateDelta(i, j int, h, other *RollingHashTable) (Delta, int, int) {
 	}
 	// check for inserted data in the second file
 	if h.hashMap[other.hashSlice[j]] == 0 {
-		// found inserted data, find out how many and create a delta object
 		for auxJ := j + 1; auxJ < len(other.hashSlice); auxJ++ {
 			if h.hashMap[other.hashSlice[auxJ]] != 0 {
 				// found end of inserted data, update the delta object
-				operation := "insert"
-				if deletedFound {
-					operation = "replace"
+				operation := Insert
+				if deletedFlag {
+					operation = Replace
 				}
 				delta = Delta{
 					Operation: operation,
@@ -103,10 +100,10 @@ func CreateDelta(i, j int, h, other *RollingHashTable) (Delta, int, int) {
 				}
 				retJ = auxJ
 				break
-			} else if auxJ == len(other.hashSlice)-1 {
-				operation := "insert"
-				if deletedFound {
-					operation = "replace"
+			} else if auxJ >= len(other.hashSlice)-1 {
+				operation := Insert
+				if deletedFlag {
+					operation = Replace
 				}
 				delta = Delta{
 					Operation: operation,

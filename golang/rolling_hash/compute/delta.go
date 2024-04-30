@@ -1,14 +1,30 @@
 // Package compute provides a rolling hash based file diffing function implementation.
 package compute
 
-// Delta represents a change in the file
-type Delta struct {
-	Operation string
-	Start     int
-	End       int
-	Literal   []byte
+// Define an enum-like type for the operation type
+// OperationType represents the type of operation in the delta
+type OperationType string
+
+func (s OperationType) String() string {
+	return string(s)
 }
 
+// enum values for operation type
+const (
+	Insert  OperationType = "insert"
+	Delete  OperationType = "delete"
+	Replace OperationType = "replace"
+)
+
+// Delta represents a change in the original file compared to the new file
+type Delta struct {
+	Operation OperationType
+	Start     int    // Start position of the change in the original file
+	End       int    // End position of the change in the original file
+	Literal   []byte // Data that was inserted or deleted
+}
+
+// DeltaList represents a list of deltas
 type DeltaList struct {
 	DiffList []Delta
 }

@@ -2,28 +2,33 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+
+	"rolling_hash/cli"
 	"rolling_hash/compute"
 )
 
 func main() {
-	file1 := "original.txt"
-	file2 := "updated.txt"
-	windowSize := 32
+	// Define flags for the command line arguments
+	windowPtr := flag.Int("window", 8, "Window size for the rolling hash function")
+	flag.Parse()
+	// Get non-flag arguments
+	args := flag.Args()
 
-	deltaList, err := compute.DiffFiles(file1, file2, windowSize)
+	fmt.Println("arguments received: ", args, "window: ", *windowPtr)
+
+	file1, file2, err := cli.ValidateArgs(args, *windowPtr)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	if len(deltaList.DiffList) == 0 {
-		fmt.Println("Files are identical")
+	deltaList, err := compute.DiffFiles(file1, file2, *windowPtr)
+	if err != nil {
+		fmt.Println("Error:", err)
 		return
 	}
 
-	fmt.Println("Delta for upgrade:")
-	for _, d := range deltaList.DiffList {
-		fmt.Println(d)
-	}
+	cli.PrintResult(deltaList)
 }

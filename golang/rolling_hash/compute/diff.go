@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	defaultWindowSize = 32 // Size of the window for the rolling hash function
+	defaultWindowSize = 8 // Size of the window for the rolling hash function
 )
 
 // DiffFiles compares two files and generates a delta for upgrade

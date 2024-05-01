@@ -1,0 +1,39 @@
+Script ran successfully.
+
+== Logs ==
+  Token Implementation Address: 0xD0B98e56F19f9b5c2Ef0de72c0bc799a99555261
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 11155111
+
+Estimated gas price: 3.468369102 gwei
+
+Estimated total gas used for script: 1018118
+
+Estimated amount required: 0.003531209013390036 ETH
+
+==========================
+##
+Sending transactions [0 - 0].
+⠁ [00:00:00] [########################################################################################################################################################################] 1/1 txes (0.0s)##
+Waiting for receipts.
+⠉ [00:00:06] [####################################################################################################################################################################] 1/1 receipts (0.0s)
+##### sepolia
+✅  [Success]Hash: 0x31378303acb2b351783f81271e5d00539cfe19efc9187308cd377ffe493f40e1
+Contract Address: 0xD0B98e56F19f9b5c2Ef0de72c0bc799a99555261
+Block: 5817567
+Paid: 0.002522603083589364 ETH (783382 gas * 3.220144302 gwei)
+
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+Total Paid: 0.002522603083589364 ETH (783382 gas * avg 3.220144302 gwei)
+
+Transactions saved to: /home/juan/Projects/coding_skills_e/solidity/broadcast/DeployERC20SwapperV1.s.sol/11155111/run-latest.json
+
+Sensitive values saved to: /home/juan/Projects/coding_skills_e/solidity/cache/DeployERC20SwapperV1.s.sol/11155111/run-latest.json

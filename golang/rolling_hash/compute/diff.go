@@ -5,12 +5,8 @@ import (
 	"os"
 )
 
-const (
-	defaultWindowSize = 8 // Size of the window for the rolling hash function
-)
-
 // DiffFiles compares two files and generates a delta for upgrade
-func DiffFiles(file1, file2 string, inputWindowSize int) (*DeltaList, error) {
+func DiffFiles(file1, file2 string, windowSize int) (*DeltaList, error) {
 	data1, err := os.ReadFile(file1)
 	if err != nil {
 		return nil, err
@@ -18,11 +14,6 @@ func DiffFiles(file1, file2 string, inputWindowSize int) (*DeltaList, error) {
 	data2, err := os.ReadFile(file2)
 	if err != nil {
 		return nil, err
-	}
-
-	windowSize := inputWindowSize
-	if windowSize == 0 {
-		windowSize = defaultWindowSize
 	}
 
 	file1HashTable := NewRollingHashTable(data1, windowSize)

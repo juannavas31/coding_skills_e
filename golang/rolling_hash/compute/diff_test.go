@@ -33,12 +33,13 @@ func TestDiffFiles(t *testing.T) {
 			// arrange
 			file1 := "../test/test_files/original.txt"
 			file2 := "../test/test_files/original.txt"
+			windowSize := 6
 			expectedDeltaList := &DeltaList{
 				DiffList: []Delta{},
 			}
 
 			// act
-			deltaList, err := DiffFiles(file1, file2, defaultWindowSize)
+			deltaList, err := DiffFiles(file1, file2, windowSize)
 
 			// assert
 			Expect(err).ToNot(g.HaveOccurred())

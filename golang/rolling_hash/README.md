@@ -1,7 +1,7 @@
 # Rolling Hash Algorithm
 
-This application implements a rolling hash based file diffing algorithm to compare an original and updated version of a file. It returns a list of ("deltas") describing: 
-- The type of operation (Insert, Delete, Replace)
+This application implements a rolling hash based file diffing algorithm to compare an original and updated version of a file. It returns a list of _deltas_ describing: 
+- The type of operation ( _Insert_, _Delete_, _Replace_ )
 - The start position in the original file
 - The end position in the original file
 - The data changed (inserted data, deleted data or new data replacing the old ones)
@@ -14,16 +14,23 @@ The real-world use case would be to compare files the way git does at pull reque
 
 # Usage
 
-To build the applicaion, just use the `go build` command
+To build the applicaion, just use the `go build -o diffing` command
 
 To run unit tests, just use the command `go test -v ./...`
 
-To run the application, use the following command
+To run the application, use the following command syntax
 
-`./rolling_hash --window=<n> <original_file> <updated_file>`
+`./diffing --window=<n> <original_file> <updated_file>`
 
 where: 
-    - n is the window size, recommended values are the size of a word or substring, for instance 6
-    - original_file is the file base to compare
-    - updated_file is the modified file
 
+* _window=n_ optional (default=6). Specifies the window size, recommended value is the size of a word, for instance 6
+* *original_file* is the base file to compare with
+* *updated_file* is the modified file
+
+For example: 
+
+`./diffing --window=6 original.txt updated.txt`
+
+
+Happy diffing!!

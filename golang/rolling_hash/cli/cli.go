@@ -21,8 +21,8 @@ func ValidateArgs(args []string, window int) (string, string, error) {
 		return "", "", errors.New("invalid syntax, expected rolling_hash --window=<n> <old_file> <new_file>")
 	}
 
-	if window < 0 {
-		return "", "", errors.New("invalid window size, it must be a positive integer")
+	if window < 2 {
+		return "", "", errors.New("invalid window size, it must be greater than 1")
 	}
 
 	file1 := args[0]

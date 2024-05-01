@@ -11,12 +11,10 @@ import (
 
 func main() {
 	// Define flags for the command line arguments
-	windowPtr := flag.Int("window", 8, "Window size for the rolling hash function")
+	windowPtr := flag.Int("window", 6, "Window size for the rolling hash function")
 	flag.Parse()
 	// Get non-flag arguments
 	args := flag.Args()
-
-	fmt.Println("arguments received: ", args, "window: ", *windowPtr)
 
 	file1, file2, err := cli.ValidateArgs(args, *windowPtr)
 	if err != nil {

@@ -1,0 +1,37 @@
+== Logs ==
+  UUPS Proxy Address: 0x72095610842898D073F89d75Fe57bb179652864e
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 11155111
+
+Estimated gas price: 3.222496976 gwei
+
+Estimated total gas used for script: 289356
+
+Estimated amount required: 0.000932448834987456 ETH
+
+==========================
+##
+Sending transactions [0 - 0].
+⠁ [00:00:00] [########################################################################################################################################################################] 1/1 txes (0.0s)##
+Waiting for receipts.
+⠉ [00:00:24] [####################################################################################################################################################################] 1/1 receipts (0.0s)
+##### sepolia
+✅  [Success]Hash: 0xfb938e903d2eb90b8fe251cf08f11de5b1b210e1a42f7fffcd6e7c305af73672
+Contract Address: 0x72095610842898D073F89d75Fe57bb179652864e
+Block: 5817603
+Paid: 0.000691606741770942 ETH (222658 gas * 3.106139199 gwei)
+
+
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+Total Paid: 0.000691606741770942 ETH (222658 gas * avg 3.106139199 gwei)
+
+Transactions saved to: /home/juan/Projects/coding_skills_e/solidity/broadcast/DeployUUPSProxy.s.sol/11155111/run-latest.json
+
+Sensitive values saved to: /home/juan/Projects/coding_skills_e/solidity/cache/DeployUUPSProxy.s.sol/11155111/run-latest.json
